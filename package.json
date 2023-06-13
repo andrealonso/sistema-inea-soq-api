@@ -1,0 +1,23 @@
+{
+  "name": "Soq_api",
+  "version": "1.0.0",
+  "main": "server.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seeds": "node prisma/seeds"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^4.11.0",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "moment": "^2.29.4",
+    "mysql2": "^3.2.0",
+    "nodemon": "^2.0.21",
+    "prisma": "^4.11.0"
+  }
+}
