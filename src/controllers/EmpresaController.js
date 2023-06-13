@@ -1,6 +1,6 @@
 const { connect } = require('../services/db')
 const { PrismaClient } = require('@prisma/client')
-const EmpresaService = require('../repositories/UsuarioService')
+const EmpresaService = require('../repositories/EmpresaService')
 
 class EmpresaController {
     async criar(req, res) {
