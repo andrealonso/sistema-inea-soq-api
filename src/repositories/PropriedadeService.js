@@ -4,8 +4,8 @@ class PropriedadeService {
 
     async create(payload) {
         try {
-            const dados = await prisma.user.create({ data: payload })
 
+            const dados = await prisma.propriedades.create({ data: payload })
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);
@@ -15,7 +15,7 @@ class PropriedadeService {
     }
     async getAll(tipoId) {
         try {
-            const dados = await prisma.user.findMany()
+            const dados = await prisma.propriedades.findMany()
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);
@@ -25,7 +25,7 @@ class PropriedadeService {
     }
     async getById(id) {
         try {
-            const dados = await prisma.user.findUnique({
+            const dados = await prisma.propriedades.findUnique({
                 where: { id },
             })
             return { erro: false, dados }
@@ -39,7 +39,7 @@ class PropriedadeService {
 
     async update(id, payload) {
         try {
-            const dados = await prisma.user.update({ where: { id }, data: payload })
+            const dados = await prisma.propriedades.update({ where: { id }, data: payload })
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);
@@ -50,7 +50,7 @@ class PropriedadeService {
 
     async delete(id) {
         try {
-            const dados = await prisma.user.delete({ where: { id } })
+            const dados = await prisma.propriedades.delete({ where: { id } })
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);

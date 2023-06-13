@@ -111,9 +111,9 @@ model Empresas {
 model Propriedades {
   id          Int         @id @default(autoincrement())
   nome        String
-  car         String
+  car         String?
   area        Decimal
-  geolocal    String
+  geolocal    String?
   empresas    Empresas?   @relation(fields: [empresas_id], references: [id])
   empresas_id Int?
   obs         String?     @db.Text
