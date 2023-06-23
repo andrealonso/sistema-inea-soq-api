@@ -101,7 +101,7 @@ model Empresas {
   parceira_inea Boolean        @default(false)
   propriedades  Propriedades[]
   pessoas       Pessoas[]
-  endereco      Enderecos[]
+  enderecos     Enderecos[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -120,7 +120,7 @@ model Propriedades {
   empresas    Empresas?   @relation(fields: [empresas_id], references: [id])
   empresas_id Int?
   obs         String?     @db.Text
-  endereco    Enderecos[]
+  enderecos   Enderecos[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt

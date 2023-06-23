@@ -84,7 +84,6 @@ class PessoaService {
     }
     async getById(id) {
         try {
-            const selDescricao = { select: { descricao: true } }
             const dados = await prisma.pessoas.findUnique({
                 where: { id },
                 include: {

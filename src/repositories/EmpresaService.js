@@ -4,7 +4,12 @@ class EmpresaService {
 
     async create(payload) {
         try {
-            const dados = await prisma.empresas.create({ data: payload })
+            const { enderecos } = payload
+            delete payload.enderecos
+            var data = { ...payload }
+            if (enderecos)
+                data = { ...data, enderecos: { create: enderecos } }
+            const dados = await prisma.empresas.create({ data, select: { id: true } })
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);
@@ -16,11 +21,7 @@ class EmpresaService {
         // await this.pausaTeste(0)
 
         var filtro = {
-            where: {
-                AND: {
-                    deleted_at: null,
-                }
-            }
+            where: { deleted_at: null }
         }
         try {
             const [qtdRegistros, registros] = await prisma.$transaction([
@@ -45,9 +46,10 @@ class EmpresaService {
         try {
             const dados = await prisma.empresas.findUnique({
                 where: { id },
+                include: { enderecos: true }
             })
-            return { erro: false, dados }
-
+            if (!dados) return { erro: false, dados }
+            return dados
         } catch (erro) {
             console.log(erro);
             const { code } = erro
@@ -57,7 +59,13 @@ class EmpresaService {
 
     async update(id, payload) {
         try {
-            const dados = await prisma.empresas.update({ where: { id }, data: payload })
+            var data = {}
+            const { enderecos } = payload
+            delete payload.enderecos
+            delete payload.id
+            if (enderecos)
+                data = { ...payload, enderecos: { update: { where: { id: enderecos.id }, data: enderecos } } }
+            const dados = await prisma.empresas.update({ where: { id }, data, select: { id: true } })
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);
@@ -68,7 +76,7 @@ class EmpresaService {
 
     async delete(id) {
         try {
-            const dados = await prisma.empresas.delete({ where: { id } })
+            const dados = await prisma.empresas.update({ where: { id }, data: { deleted_at: new Date() }, select: { id: true } })
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);
