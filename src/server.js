@@ -8,9 +8,11 @@ const PessoaRouters = require('./routers/PessoaRouters')
 const EnderecoRouters = require('./routers/EnderecoRouters')
 const EmpresaRouters = require('./routers/EmpresaRouters')
 const ProriedadeRouters = require('./routers/PropriedadeRouters')
+const LoginRouters = require('./routers/LoginRouters')
 
 app.use(express.json())
 
+app.use('/', LoginRouters)
 app.use('/', UsuarioRoutres)
 app.use('/', PessoaRouters)
 app.use('/', EnderecoRouters)

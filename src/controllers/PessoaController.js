@@ -17,8 +17,8 @@ class PessoaController {
         const skip = Number(req?.query?.skip) || 0
         const take = Number(req?.query?.take) || 100
         const busca = req?.query?.busca || ""
-        const tipoId = Number(req?.query?.tipo) || 1
-        const dados = await PessoaService.getAll(tipoId, skip, take, busca)
+        const tipo = Number(req?.query?.tipo) || 1
+        const dados = await PessoaService.getAll(tipo, skip, take, busca)
         if (!dados?.erro) {
             res.status(200).send(dados)
         } else {

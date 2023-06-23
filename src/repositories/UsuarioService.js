@@ -39,6 +39,7 @@ class UserService {
 
     async update(id, payload) {
         try {
+            if (!payload?.senha) delete payload.senha
             const dados = await prisma.user.update({ where: { id }, data: payload })
             return { erro: false, dados }
         } catch (erro) {

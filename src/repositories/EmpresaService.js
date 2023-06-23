@@ -12,15 +12,34 @@ class EmpresaService {
             return { erro: true, codigo: code, msg: 'Erro ao tentar criar o registro no banco.' }
         }
     }
-    async getAll(tipoId) {
+    async getAll(skip, take, busca) {
+        // await this.pausaTeste(0)
+
+        var filtro = {
+            where: {
+                AND: {
+                    deleted_at: null,
+                }
+            }
+        }
         try {
-            const dados = await prisma.empresas.findMany()
+            const [qtdRegistros, registros] = await prisma.$transaction([
+                prisma.empresas.count({ ...filtro }),
+                prisma.empresas.findMany({
+                    ...filtro,
+                    orderBy: { nome: "asc" },
+                    skip,
+                    take
+                }),
+            ])
+            const qtdPaginas = Math.ceil(qtdRegistros / take)
+            const dados = { qtdRegistros, qtdPaginas, registros }
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);
-            const { code } = erro
-            return { erro: true, codigo: code, msg: 'Erro ao tentar criar o registro no banco.' }
+            return { erro: true, msg: 'Erro ao tentar exibir listagem no banco.' }
         }
+
     }
     async getById(id) {
         try {

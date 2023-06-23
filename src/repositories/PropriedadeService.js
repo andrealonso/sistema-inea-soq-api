@@ -4,7 +4,6 @@ class PropriedadeService {
 
     async create(payload) {
         try {
-
             const dados = await prisma.propriedades.create({ data: payload })
             return { erro: false, dados }
         } catch (erro) {
