@@ -66,7 +66,9 @@ class PessoaService {
                     include: {
                         enderecos: { select: { cep: true } },
                         usuario: { select: { login: true, ativo_status_id: true } },
-                        empresas: { select: { nome: true } }
+                        empresas: { select: { nome: true } },
+                        propriedades_donos: { select: { dono: true } },
+                        propriedades_repre: { select: { repre: true } },
                     },
                     orderBy: { nome: "asc" },
                     skip,
@@ -74,7 +76,7 @@ class PessoaService {
                 }),
             ])
             const qtdPaginas = Math.ceil(qtdRegistros / take)
-            const dados = { qtdRegistros, qtdPaginas, registros }
+            const dados = { qtdRegistros, qtdPaginas, dados: registros }
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);

@@ -5,23 +5,16 @@ var tabelasErro = []
 
 prisma.ativo_status
 const seeds = {
-    pessoas_tipo: [
+    user_tipo: [
         { id: 1, descricao: "ADM ROOT" },
         { id: 2, descricao: "ADM INEA" },
         { id: 3, descricao: "ADM EMPRESA" },
         { id: 4, descricao: "FISCAL INEA" },
-        { id: 5, descricao: "FUNCIONÁRIO" },
-        { id: 6, descricao: "PROPRIETÁRIO" },
-        { id: 7, descricao: "REPRESENTANTE" },
+        { id: 5, descricao: "FUNCIONÁRIO" }
     ],
     ativo_status: [
         { id: 1, descricao: "ATIVO" },
         { id: 2, descricao: "INATIVO" }
-    ],
-    doc_destino: [
-        { id: 1, descricao: "PESSOAS" },
-        { id: 2, descricao: "EMPRESAS" },
-        { id: 3, descricao: "PROPRIEDADES" }
     ]
 
 }

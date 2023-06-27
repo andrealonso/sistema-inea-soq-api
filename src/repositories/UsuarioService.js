@@ -5,7 +5,6 @@ class UserService {
     async create(payload) {
         try {
             const dados = await prisma.user.create({ data: payload })
-
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);
@@ -15,7 +14,7 @@ class UserService {
     }
     async getAll(tipoId) {
         try {
-            const dados = await prisma.user.findMany()
+            const dados = await prisma.user.findMany({ where: { deleted_at: null } })
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);
@@ -51,7 +50,7 @@ class UserService {
 
     async delete(id) {
         try {
-            const dados = await prisma.user.delete({ where: { id } })
+            const dados = await prisma.user.update({ where: { id }, data: { deleted_at: new Date() } })
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);
