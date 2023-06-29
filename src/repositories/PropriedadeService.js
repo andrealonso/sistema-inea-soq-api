@@ -4,17 +4,8 @@ class PropriedadeService {
 
     async create(payload) {
         try {
-            const { enderecos } = payload
-            delete payload.enderecos
-            var data = { ...payload }
-            if (enderecos)
-                data = { ...data, enderecos: { create: enderecos } }
             const dados = await prisma.propriedades.create({
-                data: {
-                    ...payload,
-                    dono_propri: { connect: { id: 34 } },
-                    repre_propri: { connect: { id: 39 } },
-                },
+                data: payload,
                 select: { id: true }
             })
             return { erro: false, dados }
@@ -37,11 +28,9 @@ class PropriedadeService {
                     ...filtro,
                     orderBy: { nome: "asc" },
                     include: {
-                        dono_propri: { select: { dono: { select: { nome: true } } } },
-                        repre_propri: { select: { repre: true } }
+                        representantes: { select: { nome: true } },
+                        proprietarios: { select: { nome: true } }
                     },
-                    skip,
-                    take
                 }),
             ])
             const qtdPaginas = Math.ceil(qtdRegistros / take)
@@ -55,10 +44,24 @@ class PropriedadeService {
     }
     async getById(id) {
         try {
-            const dados = await prisma.propriedades.findUnique({
-                where: { id },
-                include: { enderecos: true }
-            })
+            const [representantes, proprietarios, propriedade] = await prisma.$transaction([
+                prisma.representantes.findMany({
+                    where: { deleted_at: null },
+                    select: { id: true, nome: true }
+                }),
+                prisma.proprietarios.findMany({
+                    where: { deleted_at: null },
+                    select: { id: true, nome: true }
+                }),
+                prisma.propriedades.findMany({
+                    where: { AND: { id, deleted_at: null } },
+                    include: {
+                        representantes: { select: { nome: true } },
+                        proprietarios: { select: { nome: true } }
+                    },
+                })
+            ])
+            const dados = { representantes, proprietarios, propriedade: propriedade[0] }
             if (!dados) return { erro: false, dados }
             return dados
         } catch (erro) {
@@ -70,15 +73,10 @@ class PropriedadeService {
 
     async update(id, payload) {
         try {
-            var data = {}
-            const { enderecos } = payload
-            delete payload.enderecos
-            delete payload.id
-            if (enderecos)
-                data = { ...payload, enderecos: { update: { where: { id: enderecos.id }, data: enderecos } } }
-            const dados = await prisma.repreDePropriedades.create({
-                data: { repre_id: 39, propriedade_id: id },
-                include: { propriedade: true, repre: true }
+            const dados = await prisma.propriedades.update({
+                where: { id },
+                data: payload,
+                select: { id: true },
             })
             return { erro: false, dados }
         } catch (erro) {
@@ -90,7 +88,11 @@ class PropriedadeService {
 
     async delete(id) {
         try {
-            const dados = await prisma.propriedades.update({ where: { id }, data: { deleted_at: new Date() }, select: { id: true } })
+            const dados = await prisma.propriedades.update({
+                where: { id },
+                data: { deleted_at: new Date() },
+                select: { id: true }
+            })
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);

@@ -39,7 +39,7 @@ model Ativo_status {
   @@map("ativo_status")
 }
 
-model Prorietarios {
+model Proprietarios {
   id          Int            @id @default(autoincrement())
   nome        String
   cpf         String
@@ -132,8 +132,8 @@ model Propriedades {
   obs              String?         @db.Text
   representantes   Representantes? @relation(fields: [representante_id], references: [id])
   representante_id Int?
-  Prorietarios     Prorietarios?   @relation(fields: [prorietario_id], references: [id])
-  prorietario_id   Int?
+  proprietarios    Proprietarios?  @relation(fields: [proprietario_id], references: [id])
+  proprietario_id  Int?
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
