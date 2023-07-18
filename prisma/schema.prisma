@@ -23,6 +23,7 @@ model User {
   user_tipo_id    Int?
   empresas        Empresas?     @relation(fields: [empresas_id], references: [id])
   empresas_id     Int?
+  agendamentos    Agenda[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -92,22 +93,23 @@ model User_tipo {
 }
 
 model Empresas {
-  id            Int     @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
   nome          String
   cnpj          String
   email         String?
   telefone      String?
   contato_nome  String?
   contato_tel   String?
-  obs           String? @db.Text
+  obs           String?  @db.Text
   cep           String?
   rua           String?
   num           String?
   bairro        String?
   cidade        String?
   uf            String?
-  parceira_inea Boolean @default(false)
+  parceira_inea Boolean  @default(false)
   usuarios      User[]
+  agendamentos  Agenda[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -134,6 +136,7 @@ model Propriedades {
   representante_id Int?
   proprietarios    Proprietarios?  @relation(fields: [proprietario_id], references: [id])
   proprietario_id  Int?
+  agendamentos     Agenda[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -162,4 +165,26 @@ model Doc_destino {
   documentos Documentos[]
 
   @@map("doc_destino")
+}
+
+model Agenda {
+  id                  Int           @id @default(autoincrement())
+  data_inicio         DateTime
+  data_fim            DateTime
+  talhao              String
+  area_queima         Decimal
+  ordem_corte_interna String?
+  obs                 String?       @db.Text
+  propriedades        Propriedades? @relation(fields: [propriedades_id], references: [id])
+  propriedades_id     Int?
+  empresas            Empresas?     @relation(fields: [empresas_id], references: [id])
+  empresas_id         Int?
+  user                User?         @relation(fields: [user_id], references: [id])
+  user_id             Int?
+
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  deleted_at DateTime?
+
+  @@map("agenda")
 }

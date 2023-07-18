@@ -16,9 +16,14 @@ module.exports = (req, res, next) => {
 
     jwt.verify(token, config.secret, (err, decoded) => {
         if (err) return res.status(401).send({ erro: true, msg: 'Token inválido!' })
-        req.user_id = decoded.user_id
-        req.user_tipo_id = decoded.user_tipo_id
-        req.parceira_inea = decoded.parceira_inea
+        req.user = {
+            nome: decoded.nome,
+            user_id: Number(decoded.user_id),
+            user_tipo_id: Number(decoded.user_tipo_id),
+            empresas_id: Number(decoded.empresas_id),
+            parceira_inea: decoded.parceira_inea,
+            token: header
+        }
         return next()
     })
 

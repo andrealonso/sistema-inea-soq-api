@@ -2,20 +2,25 @@ const { connect } = require('../services/db')
 var prisma = require('../services/prisma')
 var ProprietarioService = require("../repositories/ProprietarioService")
 
-function usuariosAutorizados(user_tipo_id) {
+function verificarAcesso(user) {
     // 1 - AMD ROOT
     // 2 - AMD INEA
     // 3 - AMD ADM EMPRESAS
     // 4 - FISCAIS
     // 5 - FUNCIONARIOS
-    const lista = [1, 2, 3, 4, 5]
-    return lista.some(item => item == user_tipo_id)
+    const listaUsuariosAutorizados = [1, 3, 5]
+    return listaUsuariosAutorizados.some(item => item == user.user_tipo_id)
 
 }
 
 class ProprietarioController {
 
     async criar(req, res) {
+        const user = req.user
+        if (!verificarAcesso(user)) {
+            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
+            return
+        }
         const dados = await ProprietarioService.create(req.body)
         if (!dados?.erro) {
             res.status(200).send(dados)
@@ -25,8 +30,9 @@ class ProprietarioController {
     }
 
     async listar(req, res) {
-        if (!usuariosAutorizados(req.user_tipo_id)) {
-            res.status(401).send({ erro: true, msg: 'Função não autorizada!' })
+        const user = req.user
+        if (!verificarAcesso(user)) {
+            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
             return
         }
         const skip = Number(req?.query?.skip) || 0
@@ -42,8 +48,9 @@ class ProprietarioController {
     }
 
     async exibir(req, res) {
-        if (!usuariosAutorizados(req.user_tipo_id)) {
-            res.status(401).send({ erro: true, msg: 'Função não autorizada!' })
+        const user = req.user
+        if (!verificarAcesso(user)) {
+            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
             return
         }
         const dados = await ProprietarioService.getById(Number(req?.params?.id))
@@ -55,8 +62,9 @@ class ProprietarioController {
     }
 
     async editar(req, res) {
-        if (!usuariosAutorizados(req.user_tipo_id)) {
-            res.status(401).send({ erro: true, msg: 'Função não autorizada!' })
+        const user = req.user
+        if (!verificarAcesso(user)) {
+            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
             return
         }
         const id = Number(req?.params?.id)
@@ -70,8 +78,9 @@ class ProprietarioController {
     }
 
     async deletar(req, res) {
-        if (!usuariosAutorizados(req.user_tipo_id)) {
-            res.status(401).send({ erro: true, msg: 'Função não autorizada!' })
+        const user = req.user
+        if (!verificarAcesso(user)) {
+            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
             return
         }
         const id = Number(req?.params?.id)

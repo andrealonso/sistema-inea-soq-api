@@ -1,9 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const PropriedadeController = require('../controllers/PropriedadeController')
-const auth = require('../middlewares/auth')
 
-router.use(auth)
 router.get('/propriedades', PropriedadeController.listar)
 router.get('/propriedade/:id', PropriedadeController.exibir)
 router.post('/propriedade', PropriedadeController.criar)
