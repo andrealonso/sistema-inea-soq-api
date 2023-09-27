@@ -1,12 +1,12 @@
-# docker image build -t img-severo-api . --no-cache
-FROM node:19-alpine as img-severo-api
+# docker image build -t api-soq . --no-cache
+FROM node:19-alpine as api-soq-inea
 
-WORKDIR /app
+WORKDIR /api
 
-COPY ./severosystemapi/package*.json ./
+COPY ./package*.json ./
 RUN yarn
 
-COPY ./severosystemapi/ /app/
+COPY ./ /api/
 
 EXPOSE 3000
 

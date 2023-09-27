@@ -54,6 +54,7 @@ model Proprietarios {
   uf          String
   obs         String?        @db.Text
   propriedade Propriedades[]
+  documentos  Documentos[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -76,6 +77,7 @@ model Representantes {
   uf          String
   obs         String?        @db.Text
   propriedade Propriedades[]
+  documentos  Documentos[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -137,6 +139,7 @@ model Propriedades {
   proprietarios    Proprietarios?  @relation(fields: [proprietario_id], references: [id])
   proprietario_id  Int?
   agendamentos     Agenda[]
+  documentos       Documentos[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -146,25 +149,25 @@ model Propriedades {
 }
 
 model Documentos {
-  id             Int          @id @default(autoincrement())
-  nome           String
-  descricao      String
-  doc_destino    Doc_destino? @relation(fields: [doc_destino_id], references: [id])
-  doc_destino_id Int?
+  id                Int             @id @default(autoincrement())
+  nome              String
+  descricao         String
+  ext               String
+  storage           String?
+  propriedades      Propriedades?   @relation(fields: [propriedades_id], references: [id])
+  propriedades_id   Int?
+  representantes    Representantes? @relation(fields: [representantes_id], references: [id])
+  representantes_id Int?
+  proprietarios     Proprietarios?  @relation(fields: [proprietarios_id], references: [id])
+  proprietarios_id  Int?
+  agenda            Agenda?         @relation(fields: [agenda_id], references: [id])
+  agenda_id         Int?
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
   @@map("documentos")
-}
-
-model Doc_destino {
-  id         Int          @id @default(autoincrement())
-  descricao  String
-  documentos Documentos[]
-
-  @@map("doc_destino")
 }
 
 model Agenda {
@@ -181,6 +184,7 @@ model Agenda {
   empresas_id         Int?
   user                User?         @relation(fields: [user_id], references: [id])
   user_id             Int?
+  documentos          Documentos[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt

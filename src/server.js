@@ -1,4 +1,5 @@
 var express = require('express')
+const morgan = require("morgan")
 var app = express()
 const cors = require('cors');
 app.use(cors({ origin: '*' }));
@@ -12,10 +13,12 @@ const EmpresaRouters = require('./routers/EmpresaRouters')
 const ProriedadeRouters = require('./routers/PropriedadeRouters')
 const LoginRouters = require('./routers/LoginRouters')
 const AgendaRouters = require('./routers/AgendaRouters')
+const DocumentosRouters = require('./routers/DocumentosRouters')
 
 app.use(express.json())
-
-
+app.use(express.urlencoded({ extended: true }))
+// app.use(morgan('dev'))
+app.use('/', DocumentosRouters)
 app.use('/', LoginRouters)
 app.use(auth)
 app.use('/', ProprietarioRouters)
