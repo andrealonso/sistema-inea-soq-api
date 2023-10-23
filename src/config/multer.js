@@ -25,6 +25,9 @@ module.exports = {
         const tipoPermitidos = [
             'application/pdf',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'image/jpeg',
+            'image/jpg',
+            'image/png'
             // 'image/pdf',
             // 'image/doc',
             // 'image/pdf',
@@ -32,6 +35,7 @@ module.exports = {
             // 'image/pdf',
         ]
         // console.log(file.mimetype);
+        // cb(null, true)
         if (tipoPermitidos.includes(file.mimetype)) {
             cb(null, true)
         } else {

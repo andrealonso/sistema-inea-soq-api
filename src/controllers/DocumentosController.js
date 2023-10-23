@@ -46,7 +46,7 @@ class DocumentosController {
 
     async filtrar(req, res) {
         const filtro = definirBusca(req.query)
-        const dados = await DocumentosService.getAll(filtro)
+        const dados = await DocumentosService.filtrar(filtro)
 
         if (!dados?.erro) {
             res.status(200).send(dados)
