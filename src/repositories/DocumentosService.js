@@ -44,7 +44,6 @@ class DocumentosService {
     async getById(id) {
         try {
             const dados = await prisma.documentos.findUnique({ where: { id } })
-            console.log(dados);
             if (!dados) return { erro: false, dados }
             return dados
         } catch (erro) {

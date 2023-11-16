@@ -17,9 +17,9 @@ function definirBusca(payload) {
 class DocumentosController {
     async criar(req, res) {
         if (req.file) {
-            const { descricao } = req.body
             const destinoDocs = definirBusca(req.body)
             const { filename, ext } = req.file
+            const { descricao } = req.body
             const dados = await DosumentoService.criate(destinoDocs, {
                 ...destinoDocs, descricao, nome: filename, ext
             })
@@ -60,7 +60,6 @@ class DocumentosController {
         //     res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
         //     return
         // }
-        console.log(typeof Number(req?.params?.id));
         const dados = await DocumentosService.getById(Number(req?.params?.id))
         if (!dados?.erro) {
             res.status(200).send(dados)
@@ -82,10 +81,10 @@ class DocumentosController {
     }
 
     async editar(req, res) {
-        if (!verificarAcesso(req.user)) {
-            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
-            return
-        }
+        // if (!verificarAcesso(req.user)) {
+        //     res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
+        //     return
+        // }
         const id = Number(req?.params?.id)
         const payload = req.body
         const dados = await DocumentosService.update(id, payload)

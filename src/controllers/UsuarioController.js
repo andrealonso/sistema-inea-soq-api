@@ -58,7 +58,7 @@ class UsuarioController {
             if (user.user_tipo_id === 3 && user.parceira_inea) {
                 filtro = {
                     user_tipo_id: { in: [3, 5] },
-                    empresas_id: null
+                    empresas_id: user.empresas_id
                 }
             }
 

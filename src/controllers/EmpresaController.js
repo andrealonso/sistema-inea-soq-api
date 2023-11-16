@@ -2,23 +2,24 @@ const { connect } = require('../services/db')
 const { PrismaClient } = require('@prisma/client')
 const EmpresaService = require('../repositories/EmpresaService')
 
-function verificarAcesso(user) {
+function verificarAcesso(req, res) {
+    const { user } = req
     // 1 - AMD ROOT
     // 2 - AMD INEA
     // 3 - AMD ADM EMPRESAS
     // 4 - FISCAIS
     // 5 - FUNCIONARIOS
     const listaUsuariosAutorizados = [1, 2, 3, 5]
-    return listaUsuariosAutorizados.some(item => item == user.user_tipo_id)
+    if (!listaUsuariosAutorizados.some(item => item == user.user_tipo_id)) {
+        res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
+        return false
+    }
+    return true
 }
 
 class EmpresaController {
     async criar(req, res) {
-        const user = req.user
-        if (!verificarAcesso(user)) {
-            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
-            return
-        }
+        verificarAcesso(req, res)
         const dados = await EmpresaService.create(req.body)
         if (!dados?.erro) {
             res.status(200).send(dados)
@@ -28,11 +29,7 @@ class EmpresaController {
     }
 
     async listar(req, res) {
-        const user = req.user
-        if (!verificarAcesso(user)) {
-            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
-            return
-        }
+        if (!verificarAcesso(req, res)) return
         const dados = await EmpresaService.getAll()
         if (!dados?.erro) {
             res.status(200).send(dados)
@@ -40,13 +37,14 @@ class EmpresaController {
             res.status(400).send(dados)
         }
     }
+    async filtrar(req, res) {
+        if (!verificarAcesso(req, res)) return
+
+
+    }
 
     async exibir(req, res) {
-        const user = req.user
-        if (!verificarAcesso(user)) {
-            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
-            return
-        }
+        verificarAcesso(req, res)
         const dados = await EmpresaService.getById(Number(req?.params?.id))
         if (!dados?.erro) {
             res.status(200).send(dados)
@@ -57,11 +55,7 @@ class EmpresaController {
 
 
     async editar(req, res) {
-        const user = req.user
-        if (!verificarAcesso(user)) {
-            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
-            return
-        }
+        verificarAcesso(req, res)
         const id = Number(req?.params?.id)
         const payload = req.body
         const dados = await EmpresaService.update(id, payload)
@@ -73,11 +67,7 @@ class EmpresaController {
     }
 
     async deletar(req, res) {
-        const user = req.user
-        if (!verificarAcesso(user)) {
-            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
-            return
-        }
+        verificarAcesso(req, res)
         const id = Number(req?.params?.id)
         const dados = await EmpresaService.delete(id)
         if (!dados?.erro) {

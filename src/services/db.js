@@ -5,7 +5,7 @@ async function connect() {
     const mysql = require("mysql2/promise");
     const connection = await mysql.createConnection(
         {
-            host: '192.168.18.20',
+            host: '192.168.1.12',
             user: 'donarosa',
             password: 'd4321',
             database: 'donarosa'

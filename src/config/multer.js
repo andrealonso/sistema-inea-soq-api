@@ -11,9 +11,8 @@ module.exports = {
             file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
             const ext = path.extname(file.originalname)
             file.ext = ext
-            const arquivo = file.originalname.split(' ').join('_')
-            // const nome = file.originalname.slice
-            const nomedoArquivo = `${Date.now()}-${arquivo}`
+            const arquivo = req.body.descricao.split(' ').join('_')
+            const nomedoArquivo = `${Date.now()}-${arquivo}${ext}`
             cb(null, nomedoArquivo)
         }
     }),
