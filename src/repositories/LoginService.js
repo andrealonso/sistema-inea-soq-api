@@ -20,7 +20,16 @@ class LoginService {
     }
     async getUser(req, res) {
         try {
-            return res.status(200).send({ erro: false, usuario: req.user })
+            const usuario = await prisma.user.findFirst({
+                where: { id: req.user.user_id },
+                include: { empresas: { select: { parceira_inea: true } } }
+            })
+            if (!usuario)
+                return res.status(401).send({ erro: true, msg: 'Usuario ou senha inválida!' })
+            delete usuario.senha
+            delete usuario.cpf
+            usuario.token = req.user.token
+            return res.status(200).send({ erro: false, usuario: usuario })
         } catch (erro) {
             console.log(erro);
             return res.status(401).send({ erro: true, msg: 'Erro de autenticação!' })
@@ -34,20 +43,20 @@ class LoginService {
                 include: { empresas: { select: { parceira_inea: true } } }
             })
             if (!usuario)
-                return res.status(401).send({ erro: true, msg: 'Usuario ou senha inválida!' })
+                return res.send({ erro: true, msg: 'Usuario ou senha inválida!' })
 
             if (usuario.ativo_status_id === 2)
-                return res.status(401).send({ erro: true, msg: 'Conta inativa!' })
+                return res.send({ erro: true, msg: 'Conta inativa!' })
 
             if (!await this.senhaValida(senha, usuario.senha))
-                return res.status(401).send({ erro: true, msg: 'Usuario ou senha inválida!' })
+                return res.send({ erro: true, msg: 'Usuario ou senha inválida!' })
             delete usuario.senha
             delete usuario.cpf
             usuario.token = 'Bearer ' + this.gerarToken(usuario)
             return res.status(200).send({ erro: false, usuario: usuario })
         } catch (erro) {
             console.log(erro);
-            return res.status(401).send({ erro: true, msg: 'Erro de autenticação!' })
+            return res.send({ erro: true, msg: 'Erro ao tentar acessar o servidor!' })
         }
     }
 

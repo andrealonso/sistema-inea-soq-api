@@ -24,6 +24,7 @@ model User {
   empresas        Empresas?     @relation(fields: [empresas_id], references: [id])
   empresas_id     Int?
   agendamentos    Agenda[]
+  denuncias       Denuncias[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -126,7 +127,7 @@ model Propriedades {
   car              String?
   area             Decimal         @default(0)
   area_cana        Decimal         @default(0)
-  geolocal         String?
+  geolocal         String?         @db.VarChar(255)
   cep              String?
   rua              String
   num              String?
@@ -162,6 +163,8 @@ model Documentos {
   proprietarios_id  Int?
   agenda            Agenda?         @relation(fields: [agenda_id], references: [id])
   agenda_id         Int?
+  denuncias         Denuncias?      @relation(fields: [denuncia_id], references: [id])
+  denuncia_id       Int?
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -171,24 +174,66 @@ model Documentos {
 }
 
 model Agenda {
-  id                  Int           @id @default(autoincrement())
+  id                  Int            @id @default(autoincrement())
   data_inicio         DateTime
   data_fim            DateTime
   talhao              String
   area_queima         Decimal
   ordem_corte_interna String?
-  obs                 String?       @db.Text
-  propriedades        Propriedades? @relation(fields: [propriedades_id], references: [id])
+  obs                 String?        @db.Text
+  propriedades        Propriedades?  @relation(fields: [propriedades_id], references: [id])
   propriedades_id     Int?
-  empresas            Empresas?     @relation(fields: [empresas_id], references: [id])
+  empresas            Empresas?      @relation(fields: [empresas_id], references: [id])
   empresas_id         Int?
-  user                User?         @relation(fields: [user_id], references: [id])
+  user                User?          @relation(fields: [user_id], references: [id])
   user_id             Int?
   documentos          Documentos[]
+  denuncias           Denuncias[]
+  agenda_Status       Agenda_Status? @relation(fields: [agenda_Status_id], references: [id])
+  agenda_Status_id    Int?           @default(1)
+  mudancas_datas      Mudar_datas[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
   deleted_at DateTime?
 
   @@map("agenda")
+}
+
+model Agenda_Status {
+  id        Int      @id @default(autoincrement())
+  descricao String
+  agenda    Agenda[]
+
+  @@map("agenda_status")
+}
+
+model Denuncias {
+  id         Int          @id @default(autoincrement())
+  descricao  String
+  data       DateTime
+  num_bo     String
+  documentos Documentos[]
+  agenda     Agenda?      @relation(fields: [agenda_id], references: [id])
+  agenda_id  Int?
+  user       User?        @relation(fields: [user_id], references: [id])
+  user_id    Int?
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt
+  deleted_at DateTime?
+
+  @@map("denuncias")
+}
+
+model Mudar_datas {
+  id              Int      @id @default(autoincrement())
+  descricao       String
+  data_inicio_old DateTime
+  data_fim_old    DateTime
+  data_inicio_new DateTime
+  data_fim_new    DateTime
+  agenda          Agenda?  @relation(fields: [agenda_id], references: [id])
+  agenda_id       Int?
+
+  @@map("mudar_datas")
 }

@@ -2,15 +2,13 @@ const { connect } = require('../services/db')
 var prisma = require('../services/prisma')
 var AgendaService = require("../repositories/AgendaService")
 
-function verificarAcesso(user) {
+function verificarAcesso(listaUsuariosAutorizados, user) {
     // 1 - AMD ROOT
     // 2 - AMD INEA
     // 3 - AMD ADM EMPRESAS
     // 4 - FISCAIS
     // 5 - FUNCIONARIOS
-    const listaUsuariosAutorizados = [1, 2, 3, 4, 5]
     return listaUsuariosAutorizados.some(item => item == user.user_tipo_id)
-
 }
 function configurarFiltorPorUser(user, filtro) {
     // ADM EMPRESA ou FUNCIONARIOS
@@ -24,9 +22,8 @@ function configurarFiltorPorUser(user, filtro) {
 
 
 class AgendaController {
-
     async criar(req, res) {
-        if (!verificarAcesso(req.user)) {
+        if (!verificarAcesso([1, 3, 5], req.user)) {
             res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
             return
         }
@@ -39,7 +36,7 @@ class AgendaController {
     }
 
     async listar(req, res) {
-        if (!verificarAcesso(req.user)) {
+        if (!verificarAcesso([1, 2, 3, 4, 5], req.user)) {
             res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
             return
         }
@@ -76,8 +73,6 @@ class AgendaController {
                     }
                 }
             }
-
-
             dados = await AgendaService.getAll(filtro)
         }
 
@@ -96,7 +91,7 @@ class AgendaController {
     }
 
     async filtrar(req, res) {
-        if (!verificarAcesso(req.user)) {
+        if (!verificarAcesso([1, 2, 3, 4, 5], req.user)) {
             res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
             return
         }
@@ -108,9 +103,21 @@ class AgendaController {
             res.status(400).send(dados)
         }
     }
+    async getFiltros(req, res) {
+        if (!verificarAcesso([1, 2, 3, 4, 5], req.user)) {
+            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
+            return
+        }
+        const dados = await AgendaService.getFiltros()
+        if (!dados?.erro) {
+            res.status(200).send(dados)
+        } else {
+            res.status(400).send(dados)
+        }
+    }
 
     async exibir(req, res) {
-        if (!verificarAcesso(req.user)) {
+        if (!verificarAcesso([1, 2, 3, 4, 5], req.user)) {
             res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
             return
         }
@@ -122,8 +129,21 @@ class AgendaController {
         }
     }
 
+    async print(req, res) {
+        if (!verificarAcesso([1, 2, 3, 4, 5], req.user)) {
+            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
+            return
+        }
+        const dados = await AgendaService.print(Number(req?.params?.id))
+        if (!dados?.erro) {
+            res.status(200).send(dados)
+        } else {
+            res.status(400).send(dados)
+        }
+    }
+
     async editar(req, res) {
-        if (!verificarAcesso(req.user)) {
+        if (!verificarAcesso([1, 3, 5], req.user)) {
             res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
             return
         }
@@ -138,7 +158,7 @@ class AgendaController {
     }
 
     async deletar(req, res) {
-        if (!verificarAcesso(req.user)) {
+        if (!verificarAcesso([1, 3, 5], req.user)) {
             res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
             return
         }

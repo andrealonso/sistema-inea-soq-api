@@ -6,12 +6,13 @@ dotenv.config({ path: './.env' })
 const storage_type = process.env.LOCAL_STORAGE_TYPE
 
 function definirBusca(payload) {
-    let { representantes_id, proprietarios_id, propriedades_id, agenda_id } = payload
+    let { representantes_id, proprietarios_id, propriedades_id, agenda_id, denuncia_id } = payload
     let obj = {}
     representantes_id ? obj.representantes_id = Number(representantes_id) : null
     propriedades_id ? obj.propriedades_id = Number(propriedades_id) : null
     proprietarios_id ? obj.proprietarios_id = Number(proprietarios_id) : null
     agenda_id ? obj.agenda_id = Number(agenda_id) : null
+    denuncia_id ? obj.denuncia_id = Number(denuncia_id) : null
     return obj
 }
 class DocumentosController {

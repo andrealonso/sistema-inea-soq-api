@@ -10,7 +10,7 @@ function verificarAcesso(user) {
     const listaUsuariosAutorizados = [1, 3, 5]
     return listaUsuariosAutorizados.some(item => item == user.user_tipo_id)
 }
-class UsuarioController {
+class PropriedadeController {
     async criar(req, res) {
         const user = req.user
         if (!verificarAcesso(user)) {
@@ -86,4 +86,4 @@ class UsuarioController {
     }
 }
 
-module.exports = new UsuarioController()
+module.exports = new PropriedadeController()

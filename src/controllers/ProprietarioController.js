@@ -14,7 +14,6 @@ function verificarAcesso(user) {
 }
 
 class ProprietarioController {
-
     async criar(req, res) {
         const user = req.user
         if (!verificarAcesso(user)) {
