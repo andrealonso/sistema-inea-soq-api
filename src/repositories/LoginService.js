@@ -3,6 +3,8 @@ var moment = require('moment')
 const config = require('../config/auth')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
+const logs = require('../repositories/LogsService')
+const entidade = 'Login'
 
 class LoginService {
     async senhaValida(senha, hash) {
@@ -53,6 +55,8 @@ class LoginService {
             delete usuario.senha
             delete usuario.cpf
             usuario.token = 'Bearer ' + this.gerarToken(usuario)
+
+            logs.create(usuario.id, entidade, usuario.id, 3)
             return res.status(200).send({ erro: false, usuario: usuario })
         } catch (erro) {
             console.log(erro);

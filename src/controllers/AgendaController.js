@@ -1,7 +1,7 @@
 const { connect } = require('../services/db')
 var prisma = require('../services/prisma')
 var AgendaService = require("../repositories/AgendaService")
-
+const entidade = 'Ordem de queima'
 function verificarAcesso(listaUsuariosAutorizados, user) {
     // 1 - AMD ROOT
     // 2 - AMD INEA
@@ -29,6 +29,7 @@ class AgendaController {
         }
         const dados = await AgendaService.create(req)
         if (!dados?.erro) {
+            logs.create(req.user.user_id, entidade, dados.dados.id, 0)
             res.status(200).send(dados)
         } else {
             res.status(400).send(dados)
@@ -151,6 +152,7 @@ class AgendaController {
         const payload = req.body
         const dados = await AgendaService.update(id, payload)
         if (!dados?.erro) {
+            logs.create(req.user.user_id, entidade, dados.dados.id, 1)
             res.status(200).send(dados)
         } else {
             res.status(400).send(dados)
@@ -165,6 +167,7 @@ class AgendaController {
         const id = Number(req?.params?.id)
         const dados = await AgendaService.delete(id)
         if (!dados?.erro) {
+            logs.create(req.user.user_id, entidade, dados.dados.id, 2)
             res.status(200).send(dados)
         } else {
             res.status(400).send(dados)

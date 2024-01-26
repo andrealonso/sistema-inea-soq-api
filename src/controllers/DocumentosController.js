@@ -4,6 +4,8 @@ const path = require('path')
 const dotenv = require('dotenv')
 dotenv.config({ path: './.env' })
 const storage_type = process.env.LOCAL_STORAGE_TYPE
+const logs = require('../repositories/LogsService')
+const entidade = 'Ducumentos'
 
 function definirBusca(payload) {
     let { representantes_id, proprietarios_id, propriedades_id, agenda_id, denuncia_id } = payload
@@ -25,6 +27,7 @@ class DocumentosController {
                 ...destinoDocs, descricao, nome: filename, ext
             })
             if (!dados?.erro) {
+                logs.create(user.user_id, entidade, dados.dados.id, 0)
                 res.status(200).send(dados)
             } else {
                 res.status(400).send(dados)
@@ -90,6 +93,7 @@ class DocumentosController {
         const payload = req.body
         const dados = await DocumentosService.update(id, payload)
         if (!dados?.erro) {
+            logs.create(user.user_id, entidade, dados.dados.id, 1)
             res.status(200).send(dados)
         } else {
             res.status(400).send(dados)
@@ -104,6 +108,7 @@ class DocumentosController {
         const id = Number(req?.params?.id)
         const dados = await DocumentosService.delete(id)
         if (!dados?.erro) {
+            logs.create(user.user_id, entidade, dados.dados.id, 2)
             res.status(200).send(dados)
         } else {
             res.status(400).send(dados)

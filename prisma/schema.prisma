@@ -25,6 +25,7 @@ model User {
   empresas_id     Int?
   agendamentos    Agenda[]
   denuncias       Denuncias[]
+  logs            Logs[]
 
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -236,4 +237,18 @@ model Mudar_datas {
   agenda_id       Int?
 
   @@map("mudar_datas")
+}
+
+model Logs {
+  id          Int      @id @default(autoincrement())
+  entidade    String
+  acao        String
+  registro_id Int
+  user        User     @relation(fields: [user_id], references: [id])
+  user_id     Int
+  data_hora   DateTime
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@map("logs")
 }

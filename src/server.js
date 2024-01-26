@@ -15,6 +15,8 @@ const EmpresaRouters = require('./routers/EmpresaRouters')
 const LoginRouters = require('./routers/LoginRouters')
 const AgendaRouters = require('./routers/AgendaRouters')
 const DocumentosRouters = require('./routers/DocumentosRouters')
+const LogsRouters = require('./routers/LogsRouters')
+
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -29,6 +31,7 @@ app.use('/', UsuarioRoutres)
 app.use('/', RepresentanteRouters)
 app.use('/', EmpresaRouters)
 app.use('/', AgendaRouters)
+app.use('/', LogsRouters)
 
 app.listen(3000, () => {
     console.log('Servidor ativo na porta 3000');

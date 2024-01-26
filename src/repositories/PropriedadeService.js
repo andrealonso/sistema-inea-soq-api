@@ -1,8 +1,9 @@
 var prisma = require('../services/prisma')
+var logs = require('../repositories/LogsService')
 var moment = require('moment')
 class PropriedadeService {
 
-    async create(payload) {
+    async create(payload, user) {
         try {
             const dados = await prisma.propriedades.create({
                 data: payload,
@@ -71,7 +72,7 @@ class PropriedadeService {
         }
     }
 
-    async update(id, payload) {
+    async update(id, payload, userId) {
         try {
             const dados = await prisma.propriedades.update({
                 where: { id },
