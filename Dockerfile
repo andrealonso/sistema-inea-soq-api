@@ -8,6 +8,7 @@ RUN yarn
 
 COPY ./ /api/
 
-EXPOSE 3000
+RUN npx prisma generate
 
+EXPOSE 3000
 CMD [ "yarn","start" ]
