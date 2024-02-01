@@ -1,3 +1,5 @@
+var dotenv = require('dotenv')
+dotenv.config()
 var express = require('express')
 const morgan = require("morgan")
 var app = express()
@@ -16,11 +18,11 @@ const LoginRouters = require('./routers/LoginRouters')
 const AgendaRouters = require('./routers/AgendaRouters')
 const DocumentosRouters = require('./routers/DocumentosRouters')
 const LogsRouters = require('./routers/LogsRouters')
+const ConfigRouters = require('./routers/ConfigRouters')
 
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-// app.use(morgan('dev'))
 app.use('/', LoginRouters)
 app.use(auth)
 app.use('/', DenunciaRouters)
@@ -32,6 +34,7 @@ app.use('/', RepresentanteRouters)
 app.use('/', EmpresaRouters)
 app.use('/', AgendaRouters)
 app.use('/', LogsRouters)
+app.use('/', ConfigRouters)
 
 app.listen(3000, () => {
     console.log('Servidor ativo na porta 3000');

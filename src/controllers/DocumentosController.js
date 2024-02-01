@@ -4,8 +4,6 @@ const path = require('path')
 const dotenv = require('dotenv')
 dotenv.config({ path: './.env' })
 const storage_type = process.env.LOCAL_STORAGE_TYPE
-const logs = require('../repositories/LogsService')
-const entidade = 'Ducumentos'
 
 function definirBusca(payload) {
     let { representantes_id, proprietarios_id, propriedades_id, agenda_id, denuncia_id } = payload
@@ -27,7 +25,6 @@ class DocumentosController {
                 ...destinoDocs, descricao, nome: filename, ext
             })
             if (!dados?.erro) {
-                logs.create(user.user_id, entidade, dados.dados.id, 0)
                 res.status(200).send(dados)
             } else {
                 res.status(400).send(dados)
@@ -36,10 +33,6 @@ class DocumentosController {
     }
 
     async listar(req, res) {
-        // if (!verificarAcesso(req.user)) {
-        //     res.json({ erro: true, msg: 'Acesso não autorizado' })
-        //     return
-        // } 
         const dados = await DocumentosService.getAll()
         if (!dados?.erro) {
             res.status(200).send(dados)
@@ -51,7 +44,6 @@ class DocumentosController {
     async filtrar(req, res) {
         const filtro = definirBusca(req.query)
         const dados = await DocumentosService.filtrar(filtro)
-
         if (!dados?.erro) {
             res.status(200).send(dados)
         } else {
@@ -60,10 +52,6 @@ class DocumentosController {
     }
 
     async exibir(req, res) {
-        // if (!verificarAcesso(req.user)) {
-        //     res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
-        //     return
-        // }
         const dados = await DocumentosService.getById(Number(req?.params?.id))
         if (!dados?.erro) {
             res.status(200).send(dados)
@@ -72,10 +60,6 @@ class DocumentosController {
         }
     }
     async download(req, res) {
-        // if (!verificarAcesso(req.user)) {
-        //     res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
-        //     return
-        // }
         const dados = await DocumentosService.download(Number(req?.params?.id))
         if (!dados.erro) {
             res.status(200).download(path.resolve(__dirname, '..', 'uploads', dados.nome))
@@ -85,15 +69,10 @@ class DocumentosController {
     }
 
     async editar(req, res) {
-        // if (!verificarAcesso(req.user)) {
-        //     res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
-        //     return
-        // }
         const id = Number(req?.params?.id)
         const payload = req.body
         const dados = await DocumentosService.update(id, payload)
         if (!dados?.erro) {
-            logs.create(user.user_id, entidade, dados.dados.id, 1)
             res.status(200).send(dados)
         } else {
             res.status(400).send(dados)
@@ -101,14 +80,9 @@ class DocumentosController {
     }
 
     async deletar(req, res) {
-        // if (!verificarAcesso(req.user)) {
-        //     res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
-        //     return
-        // }
         const id = Number(req?.params?.id)
         const dados = await DocumentosService.delete(id)
         if (!dados?.erro) {
-            logs.create(user.user_id, entidade, dados.dados.id, 2)
             res.status(200).send(dados)
         } else {
             res.status(400).send(dados)

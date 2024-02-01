@@ -1,7 +1,9 @@
 var prisma = require('../services/prisma')
 var moment = require('moment')
-class AndendaService {
+const email = require('../config/sendmail')
+const host_frontend = process.env.HOST_FRONTEND
 
+class AndendaService {
     async create(req) {
         try {
             let payload = req.body
@@ -9,12 +11,21 @@ class AndendaService {
             payload.data_inicio = new Date(payload.data_inicio)
             payload.data_fim = new Date(payload.data_fim)
             payload.user_id = req.user.user_id;
-
-
             const dados = await prisma.agenda.create({
                 data: payload,
                 select: { id: true }
             })
+            const ordemId = (dados.id).toLocaleString('en-US', {
+                minimumIntegerDigits: 6,
+                useGrouping: false
+            })
+            email.enviar_email(req.user.user_id, 'SOQ INEA - Nova Ordem de Queima',
+                `<div style="color: white; background-color: green; max-width: 400px; text-align: center;">
+                <h1>SOQ - INEA</h1>
+            </div>
+            <h1>Nova Ordem de Queima</h1>
+            <p><strong>Número da ordem: </strong>${ordemId}</p>`
+            )
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);
@@ -103,7 +114,7 @@ class AndendaService {
                 }),
                 prisma.propriedades.findMany({
                     where: { deleted_at: null },
-                    select: { id: true, nome: true, area_cana: true }
+                    select: { id: true, nome: true, area_cana: true, proprietarios: { select: { nome: true } } }
                 }),
                 prisma.agenda.findMany({
                     where: { AND: { id, deleted_at: null } },
@@ -192,7 +203,7 @@ class AndendaService {
                         }
                     },
                     user: { select: { nome: true } },
-                    denuncias: true
+                    denuncias: { where: { deleted_at: null } }
 
                 },
             })
@@ -213,7 +224,7 @@ class AndendaService {
         }
     }
 
-    async update(id, payload) {
+    async update(id, payload, req) {
         try {
             if (payload.data_inicio && payload.data_fim) {
                 payload.data_inicio = new Date(payload.data_inicio)
@@ -226,6 +237,14 @@ class AndendaService {
                 data: payload,
                 select: { id: true },
             })
+            const ordemId = dados.id
+            email.enviar_email(req.user.user_id, 'SOQ INEA - Alterações na Ordem de Queima',
+                `<div style="color: white; background-color: green; max-width: 400px; text-align: center;">
+                <h1>SOQ - INEA</h1>
+            </div>
+            <h1>Houve alterações na Ordem de Queima</h1>
+            <p><strong>Número da ordem: </strong><a href="${host_frontend}print/agendamento?id=${ordemId}">${ordemId}</a></p>`
+            )
             return { erro: false, dados }
         } catch (erro) {
             console.log(erro);
@@ -236,7 +255,6 @@ class AndendaService {
 
     async delete(id) {
         try {
-
             const dados = await prisma.agenda.update({
                 where: { id },
                 data: { deleted_at: new Date() },

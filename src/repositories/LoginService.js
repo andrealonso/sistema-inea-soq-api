@@ -1,12 +1,14 @@
 var prisma = require('../services/prisma')
 var moment = require('moment')
-const config = require('../config/auth')
+const jwt_secret = process.env.JWT_SECRET
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const logs = require('../repositories/LogsService')
 const entidade = 'Login'
 
+
 class LoginService {
+
     async senhaValida(senha, hash) {
         return await bcrypt.compare(senha, hash)
     }
@@ -17,7 +19,7 @@ class LoginService {
             user_tipo_id: usuario.user_tipo_id,
             empresas_id: usuario?.empresas_id || null,
             parceira_inea: usuario.empresas?.parceira_inea
-        }, config.secret, { expiresIn: 86000 })
+        }, jwt_secret, { expiresIn: 86000 })
         return token
     }
     async getUser(req, res) {

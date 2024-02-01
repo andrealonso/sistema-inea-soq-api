@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const config = require('../config/auth')
+const jwt_secret = process.env.JWT_SECRET
 
 module.exports = (req, res, next) => {
     const header = req.headers.authorization
@@ -13,8 +13,7 @@ module.exports = (req, res, next) => {
     const [scheme, token] = parts
     if (!/^Bearer$/i.test(scheme))
         return res.status(401).send({ erro: true, msg: 'Token error' })
-
-    jwt.verify(token, config.secret, (err, decoded) => {
+    jwt.verify(token, jwt_secret, (err, decoded) => {
         if (err) return res.status(401).send({ erro: true, msg: 'Token inválido!' })
         req.user = {
             nome: decoded.nome,

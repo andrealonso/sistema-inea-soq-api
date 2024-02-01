@@ -1,7 +1,7 @@
-const { connect } = require('../services/db')
-var prisma = require('../services/prisma')
 var AgendaService = require("../repositories/AgendaService")
 const entidade = 'Ordem de queima'
+const logs = require('../repositories/LogsService')
+
 function verificarAcesso(listaUsuariosAutorizados, user) {
     // 1 - AMD ROOT
     // 2 - AMD INEA
@@ -132,7 +132,7 @@ class AgendaController {
 
     async print(req, res) {
         if (!verificarAcesso([1, 2, 3, 4, 5], req.user)) {
-            res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
+            res.send({ erro: true, msg: 'Acesso não autorizado' })
             return
         }
         const dados = await AgendaService.print(Number(req?.params?.id))
@@ -150,7 +150,7 @@ class AgendaController {
         }
         const id = Number(req?.params?.id)
         const payload = req.body
-        const dados = await AgendaService.update(id, payload)
+        const dados = await AgendaService.update(id, payload, req)
         if (!dados?.erro) {
             logs.create(req.user.user_id, entidade, dados.dados.id, 1)
             res.status(200).send(dados)

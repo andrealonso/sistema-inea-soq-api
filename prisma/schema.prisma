@@ -252,3 +252,17 @@ model Logs {
 
   @@map("logs")
 }
+
+model configSistem {
+  id                    Int      @id @default(autoincrement())
+  ativar_envio          Boolean?
+  mail_user             String?
+  mail_pass             String?
+  mail_smtp             String?
+  mail_port             String?
+  mail_ssl              String?
+  mail_from             String?
+  prazo_alteracao_ordem Int?
+
+  @@map("config_sistem")
+}
