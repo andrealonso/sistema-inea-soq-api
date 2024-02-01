@@ -7,6 +7,18 @@ const cors = require('cors');
 app.use(cors({ origin: '*' }));
 const router = express.Router()
 const auth = require('./middlewares/auth')
+const prisma = require('./services/prisma')
+
+async function testeDB() {
+    try {
+        await prisma.configSistem.findFirst({ where: { id: 1 } })
+        console.log('Conexão com o banco realizada com sucesso!');
+    } catch (error) {
+        console.log('Erro ao acessar o banco de dados!');
+        console.log(error);
+    }
+}
+testeDB()
 
 const DenunciaRouters = require('./routers/DenunciaRouters')
 const ProriedadeRouters = require('./routers/PropriedadeRouters')

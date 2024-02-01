@@ -1,4 +1,4 @@
 node_modules
-src/uploads/*
 # Keep environment variables out of version control
+src/uploads/*.*
 .env
