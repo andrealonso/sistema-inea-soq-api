@@ -32,21 +32,25 @@ const DocumentosRouters = require('./routers/DocumentosRouters')
 const LogsRouters = require('./routers/LogsRouters')
 const ConfigRouters = require('./routers/ConfigRouters')
 
-
+app.get('/api/teste', (req, res) => {
+    console.log('Servidor SOQ -> ON');
+    console.log(req);
+    res.status(200).send('Servidor SOQ -> ON')
+})
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-app.use('/', LoginRouters)
+app.use('/api', LoginRouters)
 app.use(auth)
-app.use('/', DenunciaRouters)
-app.use('/', ProriedadeRouters)
-app.use('/', DocumentosRouters)
-app.use('/', ProprietarioRouters)
-app.use('/', UsuarioRoutres)
-app.use('/', RepresentanteRouters)
-app.use('/', EmpresaRouters)
-app.use('/', AgendaRouters)
-app.use('/', LogsRouters)
-app.use('/', ConfigRouters)
+app.use('/api', DenunciaRouters)
+app.use('/api', ProriedadeRouters)
+app.use('/api', DocumentosRouters)
+app.use('/api', ProprietarioRouters)
+app.use('/api', UsuarioRoutres)
+app.use('/api', RepresentanteRouters)
+app.use('/api', EmpresaRouters)
+app.use('/api', AgendaRouters)
+app.use('/api', LogsRouters)
+app.use('/api', ConfigRouters)
 
 app.listen(3000, () => {
     console.log('Servidor ativo na porta 3000');
