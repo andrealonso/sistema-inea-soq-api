@@ -32,7 +32,11 @@ const DocumentosRouters = require('./routers/DocumentosRouters')
 const LogsRouters = require('./routers/LogsRouters')
 const ConfigRouters = require('./routers/ConfigRouters')
 
-
+app.get('/api/teste', (req, res) => {
+    console.log('Servidor SOQ -> ON');
+    console.log(req);
+    res.status(200).send('Servidor SOQ -> ON')
+})
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use('/api', LoginRouters)
