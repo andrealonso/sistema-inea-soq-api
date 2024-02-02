@@ -37,53 +37,13 @@ class AgendaController {
     }
 
     async listar(req, res) {
-        if (!verificarAcesso([1, 2, 3, 4, 5], req.user)) {
+        if (!verificarAcesso([1], req.user)) {
             res.status(401).send({ erro: true, msg: 'Acesso não autorizado' })
             return
         }
         const user = req.user
         let filtro = { deleted_at: null }
-        let dados
-        //ADM ROOT
-        if (user.user_tipo_id === 1) {
-            dados = await AgendaService.getAll({ where: filtro })
-        } else {
-            // ADM FISCAL
-            if (user.user_tipo_id === 2) {
-                filtro = {
-                    deleted_at: null,
-                    propriedades_id: null,
-                    empresas_id: null
-                }
-            } else {
-                // ADM EMPRESA
-                if (!user.parceira_inea) {
-                    filtro = {
-                        deleted_at: null,
-                        propriedades_id: null,
-                        empresas_id: user.empresas_id
-                    }
-                }
-
-                // ADM EMPRESA PARCEIRA
-                if (user.parceira_inea) {
-                    filtro = {
-                        deleted_at: null,
-                        propriedades_id: null,
-                        empresas_id: null
-                    }
-                }
-            }
-            dados = await AgendaService.getAll(filtro)
-        }
-
-        if (!dados?.erro) {
-            res.status(200).send(dados)
-        } else {
-            res.status(400).send(dados)
-        }
-
-
+        const dados = await AgendaService.getAll({ where: filtro })
         if (!dados?.erro) {
             res.status(200).send(dados)
         } else {

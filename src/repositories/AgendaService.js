@@ -7,7 +7,6 @@ class AndendaService {
     async create(req) {
         try {
             let payload = req.body
-
             payload.data_inicio = new Date(payload.data_inicio)
             payload.data_fim = new Date(payload.data_fim)
             payload.user_id = req.user.user_id;
