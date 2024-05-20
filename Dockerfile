@@ -1,5 +1,5 @@
 # docker image build -t api-soq . --no-cache
-FROM node:19-alpine as api-soq-inea
+FROM node:19-alpine as img-api-tamandua
 
 WORKDIR /api
 
